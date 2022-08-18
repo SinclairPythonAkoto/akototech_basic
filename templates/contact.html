@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Contact Me</h1>
+<p>Fill in the details so I can get back in touch with you in due time.</p>
+<br>
+<form action="{{ url_for('contact') }}" method="post">
+    <b><label for="firstName">First Name:</label></b>
+    <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
+    <b><label for="lastName">Last Name:</label></b>
+    <input type="text" name="lastName" id="lastName" placeholder="Last Name" required>
+    <br>
+    <b><label for="userEmail">Email:</label></b>
+    <input type="email" name="userEmail" id="userEmail" placeholder="Enter email" required>
+    <br>
+    <p>Select why you wish to get in contact from below.</p>
+    <select name="interest" id="intrest">
+        <option selected disabled value="">Select an option</option>
+        <option value="collaboration">Collaboration</option>
+        <option value="development">Development</option>
+        <option value="tuition">Tuition</option>
+        <option value="other">Other</option>
+    </select>
+    <br>
+    <textarea name="textContent" id="textContent" cols="30" rows="10" required></textarea><br>
+    <button type="submit">Send Message</button>
+</form>
+{% endblock %}

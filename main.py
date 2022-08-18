@@ -30,20 +30,21 @@ class Tuition(db.Model):
         self.email = email
         self.date = date
 
-# Contact me page - name, email, interest (collaboration, development, tuition, other), date, message
+# Contact me page - name, email, reason (collaboration, development, tuition, other), date, message
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    interst = db.Column(db.String(15), nullable=False)
-    date = db.Column(db.String(12))
+    reason = db.Column(db.String(15), nullable=False)
     message = db.Column(db.Text, nullable=False)
+    date = db.Column(db.String(12))
 
-    def __init__(self, name, email, interest, date, message):
-        self.name = name
+    def __init__(self, first_name, last_name, email, reason, date, message):
+        self.first_name = first_name
+        self.last_name = last_name
         self.email = email
-        self.interst = interest
+        self.reason = reason
         self.date = date
         self.message = message
 
@@ -84,11 +85,29 @@ class Projects(View):
         return render_template("projects.html")
 
 # contact me (user contact page)
+class ContactMe(MethodView):
+    def get(self):
+        return render_template("contact.html")
+    
+    def post(self):
+        print(request.form)
+        first_name = request.form['firstName']
+        last_name = request.form['lastName']
+        email = request.form['userEmail']
+        interest = request.form['interest']
+        content = request.form['textContent']
+        date = datetime.strftime(datetime.today(), "%d %b %Y")
+        # add user info to Contact table
+        create_data = Contact(first_name=first_name, last_name=last_name, email=email, reason=interest, message=content, date=date)
+        db.session.add(create_data)
+        db.session.commit()
+        return render_template("contact.html")
 
 app.add_url_rule("/", view_func=Home.as_view(name="homepage"))
 app.add_url_rule("/akototuition", view_func=AkotoTuition.as_view(name="akoto_tuition"))
 app.add_url_rule("/references", view_func=References.as_view(name="ref"))
 app.add_url_rule("/projects", view_func=Projects.as_view(name="projects"))
+app.add_url_rule("/contact", view_func=ContactMe.as_view(name="contact"))
 
 if __name__ == "__main__":
     db.create_all()
