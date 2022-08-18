@@ -79,11 +79,16 @@ class References(View):
         return render_template("references.html")
 
 # projects (page to host projects)
+class Projects(View):
+    def dispatch_request(self):
+        return render_template("projects.html")
+
 # contact me (user contact page)
 
 app.add_url_rule("/", view_func=Home.as_view(name="homepage"))
 app.add_url_rule("/akototuition", view_func=AkotoTuition.as_view(name="akoto_tuition"))
 app.add_url_rule("/references", view_func=References.as_view(name="ref"))
+app.add_url_rule("/projects", view_func=Projects.as_view(name="projects"))
 
 if __name__ == "__main__":
     db.create_all()
