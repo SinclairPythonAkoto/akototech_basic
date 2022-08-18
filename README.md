@@ -10,3 +10,8 @@ pip install Flask
 pip install flask-sqlalchemy
 pip install datetime
 ```
+
+**Run app**
+```
+python main.py
+```
