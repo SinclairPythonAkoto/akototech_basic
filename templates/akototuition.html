@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Akoto Tech Tuition</h1>
+<b>
+    <p>Brief overview of what Akoto Tech is about, what they can do with the skills learned</p>
+    <p>what you can do with Python skills</p>
+    <p>examples of buisnesses / companies that use Python</p>
+    <p>lessons & pay</p>
+    <p>areas of work you can go into - web dev, data science, software development, fintech</p>
+</b><br>
+
+<h3>Want to sign up?</h3>
+<p>Enter your details below if you are interested in learning Python!</p>
+<p>You will then be contacted to arrange a taster session.</p>
+<form action="{{ url_for('akoto_tuition') }}" method="post">
+    <b><label for="first_name">First Name</label></b>
+    <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+    <b><label for="last_name">Last Name</label></b>
+    <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+    <b><label for="customer_email">Email</label></b>
+    <input type="email" name="customer_email" id="customer_email" placeholder="Email" required>
+    <button type="submit">Sign Up</button>
+</form>
+
+{% if request.form %}
+<h4>DATA: </h4>
+{{ first_name }}, {{ last_name }}, {{ email }}, {{ date }}
+{% endif %}
+
+{% endblock %}
