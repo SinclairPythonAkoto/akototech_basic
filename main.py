@@ -101,7 +101,7 @@ class ContactMe(MethodView):
         create_data = Contact(first_name=first_name, last_name=last_name, email=email, reason=interest, message=content, date=date)
         db.session.add(create_data)
         db.session.commit()
-        return render_template("contact.html")
+        return redirect(url_for('homepage'))
 
 app.add_url_rule("/", view_func=Home.as_view(name="homepage"))
 app.add_url_rule("/akototuition", view_func=AkotoTuition.as_view(name="akoto_tuition"))
