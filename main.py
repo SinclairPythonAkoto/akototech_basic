@@ -1,12 +1,16 @@
 import imp
 import os
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask.views import View, MethodView
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from functools import wraps
 
 # config Flask app
 app = Flask(__name__)
+
+# set session for secret key
+app.secret_key = "Bond18SINclair60!RoBoTIcs?P91YthOn"
 
 # database config
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///akotodb.sqlite3"    # name of db
@@ -14,7 +18,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 # create db instance
 db = SQLAlchemy(app)
-
 
 # Akoto Tuition page - name, email, date
 class Tuition(db.Model):
@@ -48,6 +51,16 @@ class Contact(db.Model):
         self.date = date
         self.message = message
 
+# redirect to login
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You need to sign in first')
+            return redirect(url_for('admin_login'))
+    return wrap
 
 """create app class views"""
 # homepage (about me etc)
@@ -103,11 +116,25 @@ class ContactMe(MethodView):
         db.session.commit()
         return redirect(url_for('homepage'))
 
+class Login(MethodView):
+    def get(self):
+        return "Please login"
+
+    def post(self):
+        return redirect(url_for('homepage'))
+
+class PersonalPage(View):
+    @login_required
+    def dispatch_request(self):
+        return "My personal page"
+
 app.add_url_rule("/", view_func=Home.as_view(name="homepage"))
 app.add_url_rule("/akototuition", view_func=AkotoTuition.as_view(name="akoto_tuition"))
 app.add_url_rule("/references", view_func=References.as_view(name="ref"))
 app.add_url_rule("/projects", view_func=Projects.as_view(name="projects"))
 app.add_url_rule("/contact", view_func=ContactMe.as_view(name="contact"))
+app.add_url_rule("/login", view_func=Login.as_view(name="admin_login"))
+app.add_url_rule("/mypage", view_func=PersonalPage.as_view(name="mypage"))
 
 if __name__ == "__main__":
     db.create_all()
