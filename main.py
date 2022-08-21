@@ -121,7 +121,7 @@ class Login(MethodView):
     def post(self):
         username = request.form['username']
         password = request.form['userpass']
-        if username == "sin" and password == "pass":
+        if username == os.environ['USERNAME'] and password == os.environ['PASSWORD']:
             session['logged_in'] = True
             return redirect(url_for("mypage"))
         return redirect(url_for('homepage'))
