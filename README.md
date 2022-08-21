@@ -12,6 +12,7 @@ pip install datetime
 ```
 
 **Environment Variable**
+
 I used *environment variables* to keep sensitive data like my login details private.  The environment variable was created on my terminal then used the `os` library to use the same variable within my Python script.
 ```
 # create environmant variable in Windows PowerShell
