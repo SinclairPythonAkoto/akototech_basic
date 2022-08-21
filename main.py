@@ -1,4 +1,3 @@
-import imp
 import os
 from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask.views import View, MethodView
@@ -84,7 +83,6 @@ class AkotoTuition(MethodView):
         db.session.commit()
         # getting data back out to display
         get_data = Tuition.query.filter_by(email=email).first()    # filter user by users' email
-        print(get_data.first_name)
         return render_template("akototuition.html", first_name=first_name, last_name=last_name, email=email, date=date, get_data=get_data)
 
 # references (cv to download, images of places worked)
@@ -118,15 +116,23 @@ class ContactMe(MethodView):
 
 class Login(MethodView):
     def get(self):
-        return "Please login"
+        return render_template("adminlogin.html")
 
     def post(self):
+        username = request.form['username']
+        password = request.form['userpass']
+        if username == "sin" and password == "pass":
+            session['logged_in'] = True
+            return redirect(url_for("mypage"))
         return redirect(url_for('homepage'))
 
-class PersonalPage(View):
+class AkotoTechApi(MethodView):
     @login_required
-    def dispatch_request(self):
-        return "My personal page"
+    def get(self, get_data):
+        if get_data:
+            return "Get data from database"
+        else:
+            return "My API page. Give instructions on how to query the database by using my API."
 
 app.add_url_rule("/", view_func=Home.as_view(name="homepage"))
 app.add_url_rule("/akototuition", view_func=AkotoTuition.as_view(name="akoto_tuition"))
@@ -134,7 +140,7 @@ app.add_url_rule("/references", view_func=References.as_view(name="ref"))
 app.add_url_rule("/projects", view_func=Projects.as_view(name="projects"))
 app.add_url_rule("/contact", view_func=ContactMe.as_view(name="contact"))
 app.add_url_rule("/login", view_func=Login.as_view(name="admin_login"))
-app.add_url_rule("/mypage", view_func=PersonalPage.as_view(name="mypage"))
+app.add_url_rule("/api/", defaults={'get_data': None}, view_func=AkotoTechApi.as_view(name="mypage"), methods=['GET'])
 
 if __name__ == "__main__":
     db.create_all()
